@@ -1,0 +1,3 @@
+points = {
+    'login': 'api/login'
+}
