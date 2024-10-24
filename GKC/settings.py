@@ -26,13 +26,16 @@ SECRET_KEY = 'django-insecure--7#-t(udnbb7=lj37+o5)md@k@9d3xm*dsu%k*(v4^@%t!x9m*
 DEBUG = True
 AUTH_USER_MODEL = 'Core.User'
 ALLOWED_HOSTS = [
-    '127.0.0.2'
+    '127.0.0.2',
+    '10.246.46.168',
+    'bo-o003.x5.ru'
     ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'Core',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'Core',
-    'App'
+#    'Core',
+    'App',
+    'Scanner',
+    'Basket'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +131,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SILENCED_SYSTEM_CHECKS = [
+    'urls.W002',
+]
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'

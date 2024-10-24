@@ -1,50 +1,238 @@
 {% load static %}
-<!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/materialdesignicons.min.css' %}">
+    <link rel="manifest" href="/static/manifest.json">
+     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{% static 'css/vendor.bundle.base.css' %}">
     
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-    <link href="{% static 'css/background.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'jvectormap/jquery-jvectormap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/background.css' %}">
+    <link rel="shortcut icon" href="{% static 'icon/favicon.png' %}" />
+    
+</head>
+<body>
+<script src="{% static 'js/preloader.js' %}"></script>
 
-
-    <title>{{ title }} | GK</title>
-  </head>
-  <body>
-
-    <nav class="navbar fixed-top" style="background-color: #6DCB81;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">{{ title }}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel"style="background-color: #6DCB81;">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ user.name }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-            
-                <div class="offcanvas-body">
-                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        {% for item in GKRightMenu %}
-
-                       <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ item.url }}">{{ item.name }}</a>
-                       </li>
-                       {% endfor %}
-                    </ul>
-                </div>
+<div class="body-wrapper">
+    <aside class="mdc-drawer mdc-drawer--dismissible mdc-drawer--open">
+        <div class="mdc-drawer__header">
+            <a href="index.html" class="brand-logo">
+                <img src="{% static 'icon/favicon.png' %}" alt="logo" width="70%" height="70%">
+            </a>
+        </div>
+        <div class="mdc-drawer__content">
+            <div class="user-info">
+                <p class="name">{{ user.name }}</p>
+                <p class="email">{{ user.storeRole }}</p>
+            </div>
+            <div class="mdc-list-group">
+                <nav class="mdc-list mdc-drawer-menu">
+                    {{ GKRightMenu|safe }}
+                </nav>
+            </div>
+            <div class="profile-actions">
+                <a href="#">Настройки</a>
+                <span class="divider"></span>
+                <a href="/GK/session/logout">Выйти</a>
             </div>
         </div>
-    </nav>
-        
-    <div class="page">
-        {% block page %}{% endblock %}
+    </aside>
+    <div class="main-wrapper mdc-drawer-app-content">
+        <header class="mdc-top-app-bar">
+            <div class="mdc-top-app-bar__row">
+                <div class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button sidebar-toggler">menu</button>
+                    <span class="mdc-top-app-bar__title">{{ title }}</span>
+                    <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon search-text-field d-none d-md-flex">
+                        <i class="material-icons mdc-text-field__icon">search</i>
+                        <input class="mdc-text-field__input" id="text-field-hero-input">
+                        <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                                <label for="text-field-hero-input" class="mdc-floating-label">Search..</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end mdc-top-app-bar__section-right">
+                    <div class="menu-button-container menu-profile d-none d-md-block">
+                        <button class="mdc-button mdc-menu-button">
+                            <span class="d-flex align-items-center">
+                                <span class="figure">
+                                    <img src="{% static 'images/faces/face1.jpg' %}" alt="user" class="user">
+                                </span>
+                                <span class="user-name">{{ user.name }}</span>
+                            </span>
+                        </button>
+                        <div class="mdc-menu mdc-menu-surface" tabindex="-1">
+                            <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail item-thumbnail-icon-only">
+                                        <i class="mdi mdi-account-edit-outline text-primary"></i>
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Edit profile</h6>
+                                    </div>
+                                </li>
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail item-thumbnail-icon-only">
+                                        <i class="mdi mdi-settings-outline text-primary"></i>
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Logout</h6>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="divider d-none d-md-block"></div>
+                    <div class="menu-button-container">
+                        <button class="mdc-button mdc-menu-button">
+                            <i class="mdi mdi-bell"></i>
+                        </button>
+                        <div class="mdc-menu mdc-menu-surface" tabindex="-1">
+                            <h6 class="title"> <i class="mdi mdi-bell-outline mr-2 tx-16"></i> Оповещения</h6>
+                            <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail item-thumbnail-icon">
+                                        <i class="mdi mdi-email-outline"></i>
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">You received a new message</h6>
+                                        <small class="text-muted"> 6 min ago </small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="menu-button-container">
+                        <button class="mdc-button mdc-menu-button">
+                            <i class="mdi mdi-email"></i>
+                            <span class="count-indicator">
+                                <span class="count">{{ bo_TaskCount }}</span>
+                            </span>
+                        </button>
+                        <div class="mdc-menu mdc-menu-surface" tabindex="-1">
+                            <h6 class="title"><i class="mdi mdi-email-outline mr-2 tx-16"></i> Менеджер задач</h6>
+                            <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail">
+                                        <img src="{% static 'images/faces/face4.jpg' %}" alt="user">
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Новая задача</h6>
+                                        <small class="text-muted"> 1 Minutes ago </small>
+                                    </div>
+                                </li>
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail">
+                                        <img src="/static/images/faces/face2.jpg" alt="user">
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Cregh send you a message</h6>
+                                        <small class="text-muted"> 15 Minutes ago </small>
+                                    </div>
+                                </li>
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail">
+                                        <img src="/static/images/faces/face3.jpg" alt="user">
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Profile picture updated</h6>
+                                        <small class="text-muted"> 18 Minutes ago </small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="menu-button-container d-none d-md-block">
+                        <button class="mdc-button mdc-menu-button">
+                            <i class="mdi mdi-arrow-down-bold-box"></i>
+                        </button>
+                        <div class="mdc-menu mdc-menu-surface" tabindex="-1">
+                            <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail item-thumbnail-icon-only">
+                                        <i class="mdi mdi-lock-outline text-primary"></i>
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Lock screen</h6>
+                                    </div>
+                                </li>
+                                <li class="mdc-list-item" role="menuitem">
+                                    <div class="item-thumbnail item-thumbnail-icon-only">
+                                        <i class="mdi mdi-logout-variant text-primary"></i>
+                                    </div>
+                                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                                        <h6 class="item-subject font-weight-normal">Logout</h6>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="page-wrapper mdc-toolbar-fixed-adjust">
+            <main class="content-wrapper">
+                
+                {% block page %}{% endblock %}
+
+                {% if POSScanner %}
+    <style>
+        .fixed-action-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+        .btn-floating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #5faf2d;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-floating:hover {
+            background-color: #003E14;
+        }
+    </style>
+    <div class="fixed-action-btn">
+        <a class="btn-floating" id="redirectButton" href="{{ POSScanner }}">
+            <i class="material-icons">crop_free</i>
+        </a>
     </div>
-
-    
-      <script src="{% static 'js/bootstrap.js' %}"></script>
-  </body>
-
+                {% endif %}
+                
+            </main>
+        </div>
+    </div>
+</div>
+{% block js_s %}{% endblock %}
+<script src="{% static 'js/vendor.bundle.base.js' %}"></script>
+<script src="{% static 'js/Chart.min.js' %}"></script>
+<script src="{% static 'js/jquery-jvectormap.min.js' %}"></script>
+<script src="{% static 'js/jquery-jvectormap-world-mill-en.js' %}"></script>
+<script src="{% static 'js/material.js' %}"></script>
+<script src="{% static 'js/misc.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+</body>
 </html>

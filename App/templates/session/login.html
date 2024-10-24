@@ -1,0 +1,42 @@
+{% extends 'Core/blank_layer.html' %}
+{% load static %}
+{% block page %}
+<form method="post">
+    {% csrf_token %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-text-field w-100">
+                    <input class="mdc-text-field__input" type="login" id="login" name="login">
+                    <div class="mdc-line-ripple"></div>
+                    <label for="login" class="mdc-floating-label">Логин/ТН</label>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-text-field w-100">
+                    <input class="mdc-text-field__input" type="password" id="password" name="password">
+                    <div class="mdc-line-ripple"></div>
+                    <label for="password" class="mdc-floating-label">Пароль</label>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop">
+                <div class="mdc-form-field">
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <input type="submit" class="mdc-button mdc-button--raised w-100" value="Войти"/>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <a href="/GK/session/auth/scan" class="mdc-button mdc-button--raised w-100">
+                    Использовать ключ
+                </a>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <a href="/admin" class="mdc-button mdc-button--raised w-100">
+                    Сотрудник IT
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

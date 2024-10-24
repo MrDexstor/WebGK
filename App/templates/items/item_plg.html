@@ -1,0 +1,86 @@
+{% extends 'Core/base_layer.html' %}
+{% load static %}
+{% block js_s %}
+    <script src="{% static 'js/qr-gen.js' %}"></script>
+{% endblock %}
+{% block page %}
+
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="info">Инфо</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="movements">Движение</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Место</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">...</a>
+  </li>
+</ul>
+
+<div class="mdc-card">
+    {% for lc in item %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ lc.merchandiseGroupName }}</h5>
+            <table>
+                <tr>
+                    <td>
+                        {{ lc.rackNumber }}
+                        <div class="text-muted">
+                            Сталлаж
+                        </div>
+                    </td>
+                    <td>
+                        {{ lc.faceQuantityWidth }}
+                        <div class="text-muted">
+                            Фейсов (гор.)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ lc.shelfNumber }}
+                        <div class="text-muted">
+                            Полка
+                        </div>
+                    </td>
+                    <td>
+                        {{ lc.faceQuantityHeight }}
+                        <div class="text-muted">
+                            Фейсов (вер.)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ lc.positionNumber }}
+                        <div class="text-muted">
+                            Позиция
+                        </div>
+                    </td>
+                    <td>
+                        {{ lc.quantityOnShelf }}
+                        <div class="text-muted">
+                            Всего фейсов
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ lc.style }}
+                        <div class="text-muted">
+                            Выкладка
+                        </div>
+                    </td>
+                </tr>
+            </table>
+       </div>
+</div>
+    <br>
+    {% endfor %}
+</div>
+{% endblock %}

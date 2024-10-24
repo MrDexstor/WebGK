@@ -1,9 +1,9 @@
 import requests
 from Lib import gk,Log
-
+from Core.AppSettings.config import BO_Url
 
 def login(request):
-    url = gk.point('login')
+    url = f'{BO_Url()}/api/login'
     
     response = requests.get(url, headers=gk.getHeader(request.user, True))
         

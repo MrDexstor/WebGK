@@ -1,0 +1,87 @@
+{% extends 'Core/base_layer.html' %}
+{% load static %}
+{% block page %}
+
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="info">Инфо</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Движение</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="plg">Место</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">...</a>
+  </li>
+</ul>
+
+<div class="mdc-card">
+    {% for el in item %}
+    <br>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ el.type }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{ el.dateTime }}</h6>
+            <table>
+                <tbody>
+                  <tr>
+                    <td>
+                        {{ el.quantity }}
+                        <div class="text-muted">
+                            Количество
+                        </div>
+                    </td>
+                    <td>
+                        {{ el.resultStock }}
+                        <div class="text-muted">
+                            Остаток
+                        </div>
+                    </td>
+                    
+                  </tr>
+                  
+                  
+                  <tr>
+                    <td>{% if el.type != 'Заказ' %}
+                        {{ el.sellingPrice }}
+                        <div class="text-muted">
+                            Цена продажи, ₽
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if el.promoType == 'Промо' %}
+                        <span class="badge text-bg-warning">ПРОМО</span>
+                         {% endif %}
+                         {% if el.promoType == 'Выгодно EDLP' %}
+                        <span class="badge text-bg-success">Выгодно EDPL</span>
+                         {% endif %}
+                         {% if el.promoType == 'Выручай-карта' %}
+                        <span class="badge text-bg-danger">X5 Клуб</span>
+                         {% endif %}
+                         
+                    </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          {% if el.type == 'Поступление товара' %}
+                            {{ el.comment }}
+                        <div class="text-muted">
+                            Документ поставки
+                        </div>
+                          {% endif %}
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+    {% endfor %}
+    <center>Данных нет</center>
+</div>
+
+
+{% endblock %}

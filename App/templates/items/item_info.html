@@ -1,0 +1,96 @@
+{% extends 'Core/base_layer.html' %}
+{% load static %}
+{% block js_s %}
+    <script src="{% static 'js/qr-gen.js' %}"></script>
+{% endblock %}
+{% block page %}
+
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Инфо</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="movements">Движение</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="plg">Место</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">...</a>
+  </li>
+</ul>
+
+
+
+
+
+<div class="mdc-card">
+    <img src="http://media.x5.ru/rest/x5/cdnplu?format=7&plu={{ item.article }}" alt="Изображение товара" />
+    
+    <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2">
+       {{ item.fullName }}
+    </div>
+    <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2 text-muted">
+       {{ item.article }}
+    </div>
+    
+    <br><br>
+    <table>
+        <tbody>
+          <tr>
+            <td>
+                {{ item.merchandiseGroupId }} {{ item.merchandiseGroupName }}
+                <div class="text-muted">
+                    Товарная группа
+                </div>
+            </td>
+            <td id="qrcode"></td>
+          </tr>
+          <tr>
+            <td>
+                {{ item.stock }}
+                <div class="text-muted">
+                    Остаток
+                </div>
+            </td>
+            <td id="HK" onclick="generateQRCode()">
+                {{ item.itemIds.0 }}
+                <div class="text-muted">
+                    Штрихкод
+                </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                {{ item.sellingPrice }}
+                <div class="text-muted">
+                    Цена на кассе, ₽
+                </div>
+            </td>
+            <td>
+                {{ item.regularPrice }}
+                <div class="text-muted">
+                    Регулярная цена, ₽
+                </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+</div>
+    <script>
+        function generateQRCode() {
+            var text = '{{ item.itemIds.0 }}';
+            var qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: text,
+                width: 128,
+                height: 128,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            document.getElementById('HK').onclick = null;
+        }
+    </script>
+{% endblock %}

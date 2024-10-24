@@ -1,0 +1,54 @@
+{% load static %}
+<html lang="ru">
+    <head>
+      <link rel="manifest" href="/static/manifest.json">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>{{ title }}</title>
+      <!-- plugins:css -->
+      <link rel="stylesheet" href="{% static 'css/materialdesignicons.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/vendor.bundle.base.css' %}">
+      <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}">
+      <link rel="stylesheet" href="{% static 'jvectormap/jquery-jvectormap.css' %}">
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <link rel="shortcut icon" href="{%  static 'icon/favicon.png' %}" />
+    </head>
+<body>
+<script src="{% static 'js/preloader.js' %}"></script>
+  <div class="body-wrapper">
+    <div class="main-wrapper">
+      <div class="page-wrapper full-page-wrapper d-flex align-items-center justify-content-center">
+        <main class="auth-page">
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div class="stretch-card mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-1-tablet"></div>
+              <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-6-tablet">
+                <div class="mdc-card">
+                  {% block page %}{% endblock %}
+              </div>
+              <div class="stretch-card mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-1-tablet"></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  
+  <!-- plugins:js -->
+  <script src="{% static 'js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <script src="{% static 'js/Chart.min.js' %}"></script>
+  <script src="{% static 'js/jquery-jvectormap.min.js' %}"></script>
+  <script src="{% static 'js/jquery-jvectormap-world-mill-en.js' %}"></script>
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="{% static 'js/material.js' %}"></script>
+  <script src="{% static 'js/misc.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="{% static 'js/dashboard.js' %}"></script>
+  <!-- End custom js for this page-->
+</body>
+</html> 

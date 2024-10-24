@@ -8,10 +8,13 @@ def point(point_name):
 def getHeader(user, logined=False):
     if logined:
         header = {
-           "No-Authentication" : True,
-           "Authorization" : f'Basic {user.gk_login}'
+           "No-Authentication" : 'True',
+           "Authorization" : f'Basic {user.backoffice_login}'
         }
     else:
-        header = {}
+        header = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {user.bearer_token}"
+            }
     
     return header

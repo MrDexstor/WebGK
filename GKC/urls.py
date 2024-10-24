@@ -23,6 +23,8 @@ def main(request): return redirect('main')
     
 urlpatterns = [
     path('', main),
-    path('GK', include('App.urls.root')),
-    path('admin/', admin.site.urls),
+    path('POS/', include('Scanner.trassir')),
+    path('GK/', include('App.urls.root')),
+    path('admin/', admin.site.urls, name='admin'),
+    
 ]

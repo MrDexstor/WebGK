@@ -1,0 +1,18 @@
+{% extends background %}
+{% load static %}
+{% block page %}
+<div style="width: 100%" id="reader"></div>
+
+    <script src="{% static 'pos/html5-qrcode.min.js' %}"></script>
+    <script type="text/javascript" charset="utf-8">
+        function onScanSuccess(decodedText, decodedResult) {
+            html5QrcodeScanner.clear();
+            let wrkbk = decodedText.replace(/#/g, '*');
+            window.location.replace('{{ POS_cfg.root }}{{ POS_cfg.url }}?barcode=' + wrkbk);
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+	"reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+{% endblock %}
