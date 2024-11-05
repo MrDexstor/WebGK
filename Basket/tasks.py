@@ -34,7 +34,7 @@ def update_basket(basket_id):
     BasketItem.objects.filter(id__in=items_to_delete).delete()
 
     # Проверяем наличие дублирующихся PLU и объединяем их
-   # consolidate_duplicate_plu(basket)
+    consolidate_duplicate_plu(basket)
 
 def consolidate_duplicate_plu(basket):
     plu_dict = {}
