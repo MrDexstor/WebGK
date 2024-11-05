@@ -28,7 +28,8 @@ AUTH_USER_MODEL = 'Core.User'
 ALLOWED_HOSTS = [
     '127.0.0.2',
     '10.246.46.168',
-    'bo-o003.x5.ru'
+    'bo-o003.x5.ru',
+    '192.168.149.151'
     ]
 
 
