@@ -8,6 +8,34 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from ServerAPI.api.items import search
 
+
+def main(request):
+    return render(request, 'basket/index.html', 'Корзины', {'baskets': api.getAllBasket()})
+    
+    
+def create(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', None) 
+        if name is not None:
+            Basket = models.Basket(name=name)
+            Basket.save()
+        return redirect('/GK/basket')
+    else:
+        return render(request, 'basket/create.html', 'Создание корзины')
+
+
+def info(request, id):
+    basket = Basket.objects.get(id=id)
+    return render(request, 'basket/info.html', f'{basket.name}', {'basket': basket})
+
+
+
+
+
+
+
+
+
 def search_items(request):
     itemIds = request.GET.get('itemIds')
     nameContains = request.GET.get('nameContains')
@@ -23,13 +51,22 @@ def search_page(request):
     return render(request, 'Core/search.html')
 
 
-def main(request):
-    return render(request, 'basket/index.html', 'Корзины', {'baskets': api.getAllBasket()})
+@csrf_exempt
+def basket_item_update(request, basket_id):
+    if request.method == 'POST':
+        basket = get_object_or_404(Basket, id=basket_id)
+        item_id = request.POST.get('item_id')
+        plu = request.POST.get('plu')
+        quantity_in_basket = request.POST.get('quantity_in_basket')
+        item = get_object_or_404(BasketItem, id=item_id, basket=basket)
+        item.plu = plu
+        item.quantity_in_basket = quantity_in_basket
+        item.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
     
     
-def info(request, id):
-    basket = Basket.objects.get(id=id)
-    return render(request, 'basket/info.html', 'Корзина', {'basket': basket})
+
   
 
 def basket_items(request, basket_id):
@@ -101,12 +138,3 @@ def update(request, id):
     return redirect('main')
     
     
-def create(request):
-    if request.method == 'POST':
-        name = request.POST.get('name', None) 
-        if name is not None:
-            Basket = models.Basket(name=name)
-            Basket.save()
-        return redirect('/basket')
-    else:
-        return render(request, 'basket/create.html', 'Создание корзины')

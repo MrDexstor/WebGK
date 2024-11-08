@@ -1,32 +1,29 @@
 {% extends 'Core/base_layer.html' %}
 {% block page %}
 <div class="p-2 g-col-6">
-   <a class="p-2 g-col-6" href="createb">
-       <button type="button" class="btn btn-info">Создать</button>
-       </a> 
+    <a class="p-2 g-col-6" href="new_basket">
+        <button type="button" class="btn btn-info">Создать новую корзину</button>
+    </a>
 </div>
 
-<div class="p-2 g-col-6">
-
-<table class="table p-2 g-col-6">
-  <thead>
-    <tr>
-      <th scope="col">№</th>
-      <th scope="col">Название</th>
-      <th scope="col">Создана</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for basket in baskets %}
-
-    <tr>
-    
-      <th scope="row"><a href='/GK/basket/{{ basket.id }}/info'>{{ basket.id }}</a></th>
-      <td>{{ basket.name }}</td>
-      <td>{{ basket.created }}</td
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="p-2 g-col-6 scrolling">
+    <table class="table p-2 g-col-6">
+        <thead>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Название</th>
+                <th scope="col">Создана</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for basket in baskets %}
+            <tr>
+                <th scope="row"><a href='/GK/basket/{{ basket.id }}/'>{{ basket.id }}</a></th>
+                <td>{{ basket.name }}</td>
+                <td>{{ basket.created }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
