@@ -6,32 +6,6 @@
 {% block page %}
 
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="#">Инфо</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="movements">Движение</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="plg">Место</a>
-  </li>
-  <li class="nav-item ">
-      <a class="nav-link" href="#" data-bs-toggle="dropdown" >☰</a>
-
-      <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="datamatrix">Запрос DataMatrix</a></li>
-    <li><a class="dropdown-item" href="#">Добавить в корзину</a></li>
-    <li><a class="dropdown-item" href="#">Ещё какая нибуть нужная хрень...</a></li>
-  </ul>
-
-  </li>
-</ul>
-
-
-
-
-
 <div class="mdc-card">
     <img src="http://media.x5.ru/rest/x5/cdnplu?format=7&plu={{ item.article }}" alt="Изображение товара" />
     
@@ -82,13 +56,25 @@
                 </div>
             </td>
           </tr>
+          
+          
+          
+          <tr>
+              <td id='dmcode-*' on_click="generateQRCode()"></td>
+          </tr>
+          <tr>
+              <td id='dmcode-*' on_click="generateQRCode()"></td>
+          </tr>
+          <tr>
+              <td id='dmcode-*' on_click="generateQRCode()"></td>
+          </tr>
         </tbody>
       </table>
     
 </div>
     <script>
         function generateQRCode() {
-            var text = '{{ item.itemIds.0 }}';
+            var text = this.text;
             var qrcode = new QRCode(document.getElementById('qrcode'), {
                 text: text,
                 width: 128,
@@ -97,7 +83,7 @@
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
             });
-            document.getElementById('HK').onclick = null;
+            document.getElementById(this.id).onclick = null;
         }
     </script>
 {% endblock %}

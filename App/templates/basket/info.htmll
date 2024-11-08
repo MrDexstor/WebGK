@@ -1,0 +1,73 @@
+{% extends 'Core/base_layer.html' %}
+{% block page %}
+
+
+<form action="" id="action-form" method="post">
+    <a href="../bo_update">Обновить</a>
+    {% csrf_token %}
+    <div class='scrolling'>
+    <table class="table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="select-all"></th>
+          <th scope="col">PLU</th>
+          <th scope="col">Наименовение</th>
+          <th scope="col">Кол-во в корзине</th>
+          <th scope="col">Остаток</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+    
+        <tr>
+            <td><input type="checkbox" name="selected_records" value="{{ item.id }}"></td>
+            <th scope="row"><a href='/GK/items/item/{{ item.plu }}/info'>{{ item.plu }}</a></th>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity_in_basket }}</td>
+            <td>{{ item.stock_quantity }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <button class="mdc-button mdc-button--raised icon-button filled-button--warning" type="button" onclick="addRecord()">
+                        <i class="material-icons mdc-button__icon">add</i>
+                      </button>
+            </td>
+            <td>
+                <input type="text" name="plu" placeholder="" style="width: 120%">
+            </td>
+            <td>========</td>
+            <td><input type="text" name="quantity_in_basket" placeholder="0" style="width: 100%"></td>
+            <td>=========</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+</form>
+
+
+
+<script>
+        document.getElementById('select-all').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('input[name="selected_records"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = this.checked;
+            }, this);
+        });
+
+        function deleteSelected() {
+            document.getElementById('action-form').action = "";
+            document.getElementById('action-form').submit();
+        }
+
+        function processSelected() {
+            document.getElementById('action-form').action = "";
+            document.getElementById('action-form').submit();
+        }
+
+        function addRecord() {
+            document.getElementById('action-form').action = "../add/";
+            document.getElementById('action-form').submit();
+        }
+</script>
+{% endblock %}

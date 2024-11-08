@@ -1,73 +1,220 @@
 {% extends 'Core/base_layer.html' %}
 {% block page %}
 
-
-<form action="" id="action-form" method="post">
-    <a href="../bo_update">Обновить</a>
-    {% csrf_token %}
-    <div class='scrolling'>
-    <table class="table">
-      <thead>
-        <tr>
-          <th><input type="checkbox" id="select-all"></th>
-          <th scope="col">PLU</th>
-          <th scope="col">Наименовение</th>
-          <th scope="col">Кол-во в корзине</th>
-          <th scope="col">Остаток</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in items %}
-    
-        <tr>
-            <td><input type="checkbox" name="selected_records" value="{{ item.id }}"></td>
-            <th scope="row"><a href='/GK/items/item/{{ item.plu }}/info'>{{ item.plu }}</a></th>
-            <td>{{ item.name }}</td>
-            <td>{{ item.quantity_in_basket }}</td>
-            <td>{{ item.stock_quantity }}</td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td>
-                <button class="mdc-button mdc-button--raised icon-button filled-button--warning" type="button" onclick="addRecord()">
-                        <i class="material-icons mdc-button__icon">add</i>
-                      </button>
-            </td>
-            <td>
-                <input type="text" name="plu" placeholder="" style="width: 120%">
-            </td>
-            <td>========</td>
-            <td><input type="text" name="quantity_in_basket" placeholder="0" style="width: 100%"></td>
-            <td>=========</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="container mt-5">
+        <h1 class="mb-4">Корзина {{ basket.name }}</h1>
+        <div id="toolbar" class="mb-3">
+            <button id="refresh-button" class="btn btn-primary">Обновить</button>
+            <button id="delete-button" class="btn btn-danger">Удалить выбранные</button>
+            <button id="sync-button" class="btn btn-secondary">Синхронизация с магазином</button>
+        </div>
+        <table id="items-table" class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Выбрать</th>
+                    <th>PLU</th>
+                    <th>Наименование товара</th>
+                    <th>Количество в корзине</th>
+                    <th>Остаток на момент добавления</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Товары будут загружены сюда -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" id="new-plu" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="search-button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td><input type="number" id="new-quantity" class="form-control"></td>
+                    <td></td>
+                    <td><button id="add-button" class="btn btn-success">+</button></td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
-</form>
 
+    <!-- Модальное окно для поиска товара -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchModalLabel">Поиск товара</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="searchFrame" src="/GK/basket/search_page/" width="100%" height="400"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        function loadItems() {
+            const basketId = {{ basket.id }};
+            $.ajax({
+                url: `/GK/basket/${basketId}/items/`,
+                method: 'GET',
+                success: function(data) {
+                    const itemsTableBody = $('#items-table tbody');
+                    itemsTableBody.empty();
+                    data.forEach(item => {
+                        itemsTableBody.append(`
+                            <tr data-id="${item.id}">
+                                <td><input type="checkbox" class="item-checkbox" data-id="${item.id}"></td>
+                                <td>${item.plu}</td>
+                                <td>${item.name}</td>
+                                <td>${item.quantity_in_basket}</td>
+                                <td>${item.stock_quantity}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm edit-button">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function(error) {
+                    console.error('Ошибка при загрузке товаров:', error);
+                }
+            });
+        }
 
-<script>
-        document.getElementById('select-all').addEventListener('change', function() {
-            var checkboxes = document.querySelectorAll('input[name="selected_records"]');
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = this.checked;
-            }, this);
+        function addItem() {
+            const basketId = {{ basket.id }};
+            const plu = $('#new-plu').val();
+            const quantity = $('#new-quantity').val();
+            $.ajax({
+                url: `/GK/basket/${basketId}/item_add/`,
+                method: 'POST',
+                data: {
+                    plu: plu,
+                    quantity_in_basket: quantity
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        loadItems();
+                        $('#new-plu').val('');
+                        $('#new-quantity').val('');
+                    }
+                },
+                error: function(error) {
+                    console.error('Ошибка при добавлении товара:', error);
+                }
+            });
+        }
+
+        function deleteItems() {
+            const basketId = {{ basket.id }};
+            const selectedItems = $('.item-checkbox:checked');
+            const itemIds = selectedItems.map(function() {
+                return $(this).data('id');
+            }).get();
+            $.ajax({
+                url: `/GK/basket/${basketId}/item_delete/`,
+                method: 'POST',
+                data: {
+                    'item_ids[]': itemIds
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        loadItems();
+                    }
+                },
+                error: function(error) {
+                    console.error('Ошибка при удалении товаров:', error);
+                }
+            });
+        }
+
+        function editItem(row) {
+            const basketId = {{ basket.id }};
+            const itemId = row.data('id');
+            const plu = row.find('td:nth-child(2)').text();
+            const quantity = row.find('td:nth-child(4)').text();
+            row.find('td:nth-child(2)').html(`<input type="text" class="form-control" value="${plu}">`);
+            row.find('td:nth-child(4)').html(`<input type="number" class="form-control" value="${quantity}">`);
+            row.find('td:last-child').html(`
+                <button class="btn btn-success btn-sm save-button">
+                    <i class="fas fa-save"></i>
+                </button>
+            `);
+        }
+
+        function saveItem(row) {
+            const basketId = {{ basket.id }};
+            const itemId = row.data('id');
+            const plu = row.find('td:nth-child(2) input').val();
+            const quantity = row.find('td:nth-child(4) input').val();
+            $.ajax({
+                url: `/GK/basket/${basketId}/item_update/`,
+                method: 'POST',
+                data: {
+                    item_id: itemId,
+                    plu: plu,
+                    quantity_in_basket: quantity
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        loadItems();
+                    }
+                },
+                error: function(error) {
+                    console.error('Ошибка при обновлении товара:', error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            loadItems();
+
+            $('#refresh-button').click(function() {
+                loadItems();
+            });
+
+            $('#add-button').click(function() {
+                addItem();
+            });
+
+            $('#delete-button').click(function() {
+                deleteItems();
+            });
+
+            $('#sync-button').click(function() {
+                const basketId = {{ basket.id }};
+                window.location.href = `/GK/basket/${basketId}/bo_update/`;
+            });
+
+            $(document).on('click', '.edit-button', function() {
+                const row = $(this).closest('tr');
+                editItem(row);
+            });
+
+            $(document).on('click', '.save-button', function() {
+                const row = $(this).closest('tr');
+                saveItem(row);
+            });
+
+            $('#search-button').click(function() {
+                $('#searchModal').modal('show');
+                $('#searchFrame').attr('src', '/GK/basket/search_page/');
+            });
         });
-
-        function deleteSelected() {
-            document.getElementById('action-form').action = "";
-            document.getElementById('action-form').submit();
-        }
-
-        function processSelected() {
-            document.getElementById('action-form').action = "";
-            document.getElementById('action-form').submit();
-        }
-
-        function addRecord() {
-            document.getElementById('action-form').action = "../add/";
-            document.getElementById('action-form').submit();
-        }
-</script>
+    </script>
 {% endblock %}

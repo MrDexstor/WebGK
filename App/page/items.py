@@ -20,6 +20,11 @@ def item_plg(request, plu):
     item = items.item__plg(request, plu)
     return render(request, 'items/item_plg.html', 'Информация о товаре', {"item": item})
 
+
+def item_datamatrix(request, plu):
+    item = items.item__info(request, plu)
+    
+    return render(request, 'items/item_datamatrix.html', 'Честный знак. Маркировка', {"item": item})
   
 def search(request, pos = None):
     if pos is None:
