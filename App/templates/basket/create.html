@@ -1,8 +1,11 @@
 {% extends 'Core/base_layer.html' %}
+
 {% block page %}
-<form class="form"  method="POST">
-    <input type="text" name="name" id="name" value="" class="form-control" placeholder="Наименование корзины"/>
+<form class="form" method="POST">
+    <div class="form-group">
+        <input type="text" name="name" id="name" value="" class="form-control" placeholder="Наименование корзины"/>
+    </div>
     {% csrf_token %}
-    <button type="submit">Создать</button>
+    <button type="submit" class="btn btn-primary mt-3">Создать</button>
 </form>
 {% endblock %}
