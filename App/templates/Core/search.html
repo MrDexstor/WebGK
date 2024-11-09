@@ -1,24 +1,24 @@
-{% extends 'Core/base_layer.html' %}
+{% extends 'Core/blank_layer.html' %}
 {% block page %}
 
     <div class="container mt-5">
         <h1 class="mb-4">Поиск товара</h1>
         <form id="search-form">
             <div class="form-group">
-                <label for="itemIds">ID товара</label>
-                <input type="text" class="form-control" id="itemIds" placeholder="Введите ID товара">
+                <label for="itemIds">PLU/ШК-товара</label>
+                <input type="text" class="form-control" id="itemIds" placeholder="...">
             </div>
             <div class="form-group">
                 <label for="nameContains">Наименование товара</label>
                 <input type="text" class="form-control" id="nameContains" placeholder="Введите наименование товара">
             </div>
             <div class="form-group">
-                <label for="tradeGroup">Торговая группа</label>
-                <input type="text" class="form-control" id="tradeGroup" placeholder="Введите торговую группу">
+                <label for="tradeGroup">Товарная группа</label>
+                <input type="text" class="form-control" id="tradeGroup" placeholder="Don't enabled">
             </div>
             <div class="form-group">
-                <label for="limit">Лимит</label>
-                <input type="number" class="form-control" id="limit" placeholder="Введите лимит">
+                <label for="limit">Количество товарны позиций</label>
+                <input type="number" class="form-control" id="limit" value='50'>
             </div>
             <button type="button" class="btn btn-primary" id="search-submit">Поиск</button>
         </form>
@@ -26,11 +26,11 @@
             <table id="results-table" class="table table-bordered">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Article</th>
-                        <th>Short Name</th>
-                        <th>Full Name</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
+                        <th>PLU</th>
+                        <th>Наименование на ценнике</th>
+                        <th>Наименование товара</th>
+                        <th>Остаток, УЕ</th>
+                        <th>Выбор</th>
                     </tr>
                 </thead>
                 <tbody>
