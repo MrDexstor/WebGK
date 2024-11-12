@@ -78,3 +78,13 @@ class DropMenu(models.Model):
         verbose_name = 'пункт'
         verbose_name_plural = 'пункты'
     
+    
+class Label(models.Model):
+    name = models.CharField(max_length=255)
+    qr = models.CharField(max_length=255)
+    appName = models.CharField(max_length=255)
+    printer = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

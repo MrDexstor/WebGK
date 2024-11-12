@@ -1,0 +1,275 @@
+{% extends 'Core/base_layer.html' %}
+{% block page %}
+
+<div class="container scrolling">
+    <div id="toolbar" class="">
+        <button id="refresh-button" class="btn btn-primary">
+            <i class="material-icons">update</i>
+        </button>
+        <button id="delete-button" class="btn btn-danger">
+            <i class="material-icons">delete_forever</i>
+        </button>
+        <button id="print-button" class="btn btn-secondary">
+            <i class="material-icons">print</i>
+        </button>
+    </div>
+    <table id="items-table" class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th><i class="material-icons">check_box</i></th>
+                <th style="min-width: 200px;">Name</th>
+                <th>QR</th>
+                <th>App Name</th>
+                <th>Printer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Labels will be loaded here -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="new-name" aria-describedby="search-button">
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="new-qr" aria-describedby="search-button">
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="new-appName" aria-describedby="search-button">
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="new-printer" aria-describedby="search-button">
+                    </div>
+                </td>
+                <td><button id="add-button" class="btn btn-success">
+                    <i class="material-icons">add</i>
+                </button></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<!-- Модальное окно для подтверждения печати -->
+<div class="modal fade" id="printConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="printConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="printConfirmationModalLabel">Подтверждение печати</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Корректно ли распечатаны указанные коды?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="confirm-print-button">Да</button>
+                <button type="button" class="btn btn-danger" id="cancel-print-button">Нет</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function loadLabels() {
+        $.ajax({
+            url: '{% url "load_labels" %}',
+            method: 'GET',
+            success: function(data) {
+                const itemsTableBody = $('#items-table tbody');
+                itemsTableBody.empty();
+                data.forEach(item => {
+                    itemsTableBody.append(`
+                        <tr data-id="${item.id}">
+                            <td><input type="checkbox" class="item-checkbox" data-id="${item.id}"></td>
+                            <td>${item.name}</td>
+                            <td>${item.qr}</td>
+                            <td>${item.appName}</td>
+                            <td>${item.printer}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm edit-button">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                });
+            },
+            error: function(error) {
+                console.error('Error loading labels:', error);
+            }
+        });
+    }
+
+    function addLabel() {
+        const name = $('#new-name').val();
+        const qr = $('#new-qr').val();
+        const appName = $('#new-appName').val();
+        const printer = $('#new-printer').val();
+        $.ajax({
+            url: '{% url "add_label" %}',
+            method: 'POST',
+            data: {
+                name: name,
+                qr: qr,
+                appName: appName,
+                printer: printer,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    loadLabels();
+                    $('#new-name').val('');
+                    $('#new-qr').val('');
+                    $('#new-appName').val('');
+                    $('#new-printer').val('');
+                }
+            },
+            error: function(error) {
+                console.error('Error adding label:', error);
+            }
+        });
+    }
+
+    function deleteLabels() {
+        const selectedItems = $('.item-checkbox:checked');
+        const itemIds = selectedItems.map(function() {
+            return $(this).data('id');
+        }).get();
+        $.ajax({
+            url: '{% url "delete_labels" %}',
+            method: 'POST',
+            data: {
+                'item_ids[]': itemIds,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    loadLabels();
+                }
+            },
+            error: function(error) {
+                console.error('Error deleting labels:', error);
+            }
+        });
+    }
+
+    function printLabels() {
+        const selectedItems = $('.item-checkbox:checked');
+        const itemIds = selectedItems.map(function() {
+            return $(this).data('id');
+        }).get();
+        $.ajax({
+            url: '{% url "print_labels" %}',
+            method: 'POST',
+            data: {
+                'item_ids[]': itemIds,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#printConfirmationModal').modal('show');
+                } else {
+                    alert('Ошибка при печати: ' + response.message);
+                }
+            },
+            error: function(error) {
+                console.error('Error printing labels:', error);
+            }
+        });
+    }
+
+    function editLabel(row) {
+        const labelId = row.data('id');
+        const name = row.find('td:nth-child(2)').text();
+        const qr = row.find('td:nth-child(3)').text();
+        const appName = row.find('td:nth-child(4)').text();
+        const printer = row.find('td:nth-child(5)').text();
+        row.find('td:nth-child(2)').html(`<input type="text" class="form-control" value="${name}">`);
+        row.find('td:nth-child(3)').html(`<input type="text" class="form-control" value="${qr}">`);
+        row.find('td:nth-child(4)').html(`<input type="text" class="form-control" value="${appName}">`);
+        row.find('td:nth-child(5)').html(`<input type="text" class="form-control" value="${printer}">`);
+        row.find('td:last-child').html(`
+            <button class="btn btn-success btn-sm save-button" data-id="${labelId}">
+                <i class="material-icons">save</i>
+            </button>
+        `);
+    }
+
+    function saveLabel(row) {
+        const labelId = row.data('id');
+        const name = row.find('td:nth-child(2) input').val();
+        const qr = row.find('td:nth-child(3) input').val();
+        const appName = row.find('td:nth-child(4) input').val();
+        const printer = row.find('td:nth-child(5) input').val();
+        $.ajax({
+            url: '{% url "edit_label" %}',
+            method: 'POST',
+            data: {
+                label_id: labelId,
+                name: name,
+                qr: qr,
+                appName: appName,
+                printer: printer,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    loadLabels();
+                }
+            },
+            error: function(error) {
+                console.error('Error saving label:', error);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        loadLabels();
+
+        $('#refresh-button').click(function() {
+            loadLabels();
+        });
+
+        $('#add-button').click(function() {
+            addLabel();
+        });
+
+        $('#delete-button').click(function() {
+            deleteLabels();
+        });
+
+        $('#print-button').click(function() {
+            printLabels();
+        });
+
+        $('#confirm-print-button').click(function() {
+            deleteLabels();
+            $('#printConfirmationModal').modal('hide');
+        });
+
+        $('#cancel-print-button').click(function() {
+            $('#printConfirmationModal').modal('hide');
+        });
+
+        $(document).on('click', '.edit-button', function() {
+            const row = $(this).closest('tr');
+            editLabel(row);
+        });
+
+        $(document).on('click', '.save-button', function() {
+            const row = $(this).closest('tr');
+            saveLabel(row);
+        });
+    });
+</script>
+{% endblock %}

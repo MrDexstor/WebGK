@@ -9,4 +9,5 @@ urlpatterns = [
     path('items/', include('App.urls.items')),
     path('task-manager/', include('App.urls.task')),
     path('basket/', include('App.urls.basket')),
+    path('tools/', include('App.urls.tools')),
 ]
