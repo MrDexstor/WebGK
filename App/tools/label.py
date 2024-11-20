@@ -3,6 +3,8 @@ from Core.models import Label
 from App.tools.forms import LabelForm
 from django.http import JsonResponse
 from ServerAPI.api import printer
+import json
+
 
 def label_list(request):
     labels = Label.objects.filter(user=request.user)
@@ -39,10 +41,10 @@ def print_labels(request):
         label_data = []
         for label in labels:
             label_data.append({
-                'name': label.name,
-                'qr': label.qr,
-                'appName': label.appName,
-                'printer': label.printer
+                "name": label.name,
+                "qr": label.qr,
+                "appName": label.appName,
+                "printer": label.printer
             })
         response = printer.print_labels(request, label_data)
         return JsonResponse({'status': 'success'})

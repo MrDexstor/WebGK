@@ -1,5 +1,5 @@
 # Режим работы с тестовым сервером
-Develop_Server_Connect = False
+Develop_Server_Connect = True
 
 # Режим тестирования интерфейса с заготовленными данными
 Disight_Mode = False

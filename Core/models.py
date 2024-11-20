@@ -20,6 +20,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     backoffice_login = models.CharField('Ключ BackOffice', max_length= 100, default='none')
     bearer_token = models.CharField('Bearer Token пользователя', max_length=1000, default='none')
     
+    # НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ
+    #Принтеры
+    selected_stationary_printer = models.CharField('Выбранный стационарный принтер', max_length=100, blank=True, null=True)
+    selected_thermo_printer = models.CharField('Выбранный термопринтер', max_length=100, blank=True, null=True)
+    selected_mobile_printer_yellow = models.CharField('Выбранный мобильный принтер с желтой бумагой', max_length=100, blank=True, null=True)
+    selected_mobile_printer_white = models.CharField('Выбранный мобильный принтер с белой бумагой', max_length=100, blank=True, null=True)
     
     
     
