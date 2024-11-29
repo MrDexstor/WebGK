@@ -4,11 +4,13 @@ from Lib.UI import render, redirect
 from ServerAPI.api import items
 from Scanner.windows import POSTerminal
 from Scanner.Tools import BarcodeLoad
-
+from Lib.page import Page
 
 def item_info(request, plu):
     item = items.item__info(request, plu)
-    return render(request, 'items/item_info.html', 'Информация о товаре', {"item": item})
+    page = Page('Информация о товаре WebGK', 'Информация о товаре', item['article'])
+    page.returnUrl(request.META.get('HTTP_REFERER'))
+    return render(request, page, 'dm_style/items/item_info.html', {"item": item})
    
    
 def item_movements(request, plu):
@@ -26,39 +28,22 @@ def item_datamatrix(request, plu):
     
     return render(request, 'items/item_datamatrix.html', 'Честный знак. Маркировка', {"item": item})
   
-def search(request, pos = None):
-    if pos is None:
-        if request.method == 'POST':
-            article = request.POST.get('plu', None)
-            nameContains = request.POST.get('item_name', None)
-            limit = request.POST.get('max-position', None)
-            # Запросить из системы данные 
-            sr_result = items.search(request, itemIds= article, nameContains=nameContains, limit = limit)
-            if len(sr_result) == 1:
-                return redirect(f'/GK/items/item/{ sr_result[0]['article'] }/info')
-            elif len(sr_result) == 0:
-                return render(request, 'items/search.html', 'Поиск товара', POSScanner = True)
-            else: 
-                return render(request, 'items/search_result.html', 'Поиск товара', {'items': sr_result})
-        else:
-            return render(request, 'items/search.html', 'Поиск товара', POSScanner = True)
-    elif pos == 's':
-        try:
-            article = request.GET['barcode']
-        except Exception:
-            article = None
-        else:
-            article = True
-            
-            
-        if article is None:
-            return POSTerminal(request, POS_config={'url': '/GK/items//s'})
-        else:
-            barcode = BarcodeLoad(request.get_full_path())
-            sr_result = items.search(request, itemIds= barcode)
-            if len(sr_result) == 1:
-                return redirect(f'/GK/items/item/{ sr_result[0]['article'] }/info')
-            elif len(sr_result) == 0:
-                return render(request, 'items/search.html', 'Поиск товара', POSScanner = True)
-            else: 
-                return render(request, 'items/search_result.html', 'Поиск товара', {'items': sr_result})
+def search(request):
+    if request.method == 'POST':
+        article = request.POST.get('plu', None)
+        nameContains = request.POST.get('item_name', None)
+        limit = request.POST.get('max-position', None)
+        # Запросить из системы данные 
+        sr_result = items.search(request, itemIds= article, nameContains=nameContains, limit = limit)
+        if len(sr_result) == 1:
+            return redirect(f'/GK/items/item/{ sr_result[0]['article'] }/info')
+        elif len(sr_result) == 0:
+            return redirect('/GK/items/')
+        else: 
+            page = Page('Поиск товара', 'Поиск товара', 'Найдены товары по вашему запросу')
+            page.returnUrl('/GK/items/')
+            return render(request, page, 'dm_style/items/search_result.html', {'items': sr_result})
+    else:
+        page = Page('Поиск товара', 'Поиск товара', 'Диалог поиска товаров')
+        page.returnUrl('/GK/')
+        return render(request, page, 'dm_style/items/search.html')

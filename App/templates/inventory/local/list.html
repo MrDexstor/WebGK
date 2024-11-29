@@ -1,0 +1,30 @@
+{% extends 'dm_style/Core/base.html' %}
+{% block main_content %}
+{% for item in li.inventories %}
+<a href="/path/to/document/details" class="document-link">
+  <div class="document-card">
+    <div class="document-header">
+      <div class="document-title">
+        <span class="document-id">{{ item.name }}</span>
+        <span class="document-date">{{ item.stockFixingDateTime }}</span>
+      </div>
+      <div class="document-status">
+        {% if item.statusCode == '0' %}
+        Создана
+        {% endif %}
+        {% if item.statusCode == '1' %}
+        Начата
+        {% endif %}
+      </div>
+    </div>
+    <div class="document-info">
+      <div class="info-item">Всего позиций: {{ item.positionsCount }}</div>
+      <div class="info-item">Итоговая сумма: {{ item.totalSum }} руб</div>
+    </div>
+  </div>
+</a>
+
+{% endfor %}
+
+
+{% endblock %}

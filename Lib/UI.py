@@ -8,7 +8,7 @@ def redirect(*args, **kwargs):
     return shortcuts.redirect(*args, **kwargs)
     
     
-def render(request, template_name, title='', context={}, POSScanner = False, guest_mode=False, only_guest=False):
+def render(request, page_conf, template_name, context={}, POSScanner = False, guest_mode=False, only_guest=False):
     
     if config.Cookie_WorkerEnabled is True and guest_mode is False and request.user.is_authenticated:
         try:
@@ -43,8 +43,7 @@ def render(request, template_name, title='', context={}, POSScanner = False, gue
         else:
             return redirect('login')
     
-    
-    context['title'] = title
+    context['page'] = page_conf.build()
     return shortcuts.render(request, template_name, context)
     
     

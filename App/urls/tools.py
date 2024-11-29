@@ -1,8 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from App.tools import label
 
 
 urlpatterns = [
+    path('FPDD/', include('App.urls.toolsp.fpdd')),
+    
+    
+    
+    
+    # Следующие ссылки требуется переместить по отдельным разделам
     path('labels/', label.label_list, name='label_list'),
     path('labels/load/', label.load_labels, name='load_labels'),
     path('labels/delete/', label.delete_labels, name='delete_labels'),

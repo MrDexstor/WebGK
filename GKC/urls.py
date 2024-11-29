@@ -26,5 +26,6 @@ urlpatterns = [
     path('POS/', include('Scanner.trassir')),
     path('GK/', include('App.urls.root')),
     path('admin/', admin.site.urls, name='admin'),
+    path('api/', include('api.endpoints.root'))
     
 ]
