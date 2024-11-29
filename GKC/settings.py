@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -47,7 +47,8 @@ INSTALLED_APPS = [
 #    'Core',
     'App',
     'Scanner',
-    'Basket'
+    'Basket',
+    'TransferFile'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+   
 ]
+
 
 ROOT_URLCONF = 'GKC.urls'
 
@@ -141,3 +145,10 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 3758096384  # 3,5 Gb
+FILE_UPLOAD_MAX_MEMORY_SIZE = 3758096384  # 3,5 Gb
