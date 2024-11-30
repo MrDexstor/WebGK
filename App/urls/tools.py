@@ -4,7 +4,7 @@ from App.tools import label
 
 urlpatterns = [
     path('FPDD/', include('App.urls.toolsp.fpdd')),
-    
+    path('accessibility/', include('App.urls.toolsp.accessibility')),
     
     
     
